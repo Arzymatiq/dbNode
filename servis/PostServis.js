@@ -1,30 +1,38 @@
 import Post from "../model/Post.js";
+import FielServis from "./FielServis.js";
 
 class PostServis {
-  async create(body) {
-    const post = await Post.create({ title, author, price, description });
+  async create(body, image) {
+    if (body.colors) {
+      body.colors = JSON.parse(body.colors);
+    }
+
+    const fileName = await FielServis.saveFile(image);
+    const post = await Post.create({ ...body, image: fileName });
     return post;
   }
+
   async getAll() {
-    const posts = await Post.find();
-    return posts;
+    return await Post.find();
   }
+
   async getOne(id) {
-    if (!id) return console.log(error);
+    if (!id) throw new Error("ID is required");
 
-    const onePost = await Post.findById(id);
-    return onePost;
+    return await Post.findById(id);
   }
+
   async update(id, body) {
-    if (!id || !body) return console.log(error);
+    if (!id || !body) throw new Error("Invalid data");
 
-    const updatePost = await Post.findByIdAndUpdate(id, body, { new: true });
-    return updatePost;
+    return await Post.findByIdAndUpdate(id, body, { new: true });
   }
+
   async delete(id) {
-    if (!id) return console.log("error");
-    const deletPost = await Post.findByIdAndDelete(id);
-    return deletPost;
+    if (!id) throw new Error("ID is required");
+
+    return await Post.findByIdAndDelete(id);
   }
 }
+
 export default new PostServis();

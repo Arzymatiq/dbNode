@@ -8,6 +8,7 @@ const app = express();
 dotenv.config();
 
 app.use(express.json());
+app.use(express.static("static"));
 app.use(fileUpload({}));
 app.use("/api", router);
 
